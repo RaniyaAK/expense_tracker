@@ -8,6 +8,8 @@ from .forms import UserRegistrationForm, UserLoginForm
 from .models import Expense
 from .forms import ExpenseForm
 from .forms import ExpenseFilterForm
+from django.db.models import Sum
+from django.db.models.functions import TruncMonth
 
 
 
@@ -144,7 +146,7 @@ def delete_expense(request, id):
     return render(request, 'dashboard/confirm_delete.html', {'expense': expense})
 
 
-# Add Expense
+# ADD EXPENSE
 @login_required
 def add_expense(request):
     if request.method == "POST":
@@ -160,7 +162,7 @@ def add_expense(request):
     return render(request, 'dashboard/add_expense.html', {'form': form})
 
 
-# View expense
+# VIEW EXPENSE
 @login_required
 def view_expense(request):
     expenses = Expense.objects.filter(user=request.user).order_by('-date')
@@ -172,7 +174,7 @@ def view_expense(request):
         'total_expense': total_expense,
     })
 
-
+# FILTER EXPENSE
 @login_required
 def filter_expense(request):
     form = ExpenseFilterForm(request.GET or None)
@@ -188,9 +190,8 @@ def filter_expense(request):
         'expenses': expenses
     })
 
-from django.db.models import Sum
-from django.db.models.functions import TruncMonth
 
+# MONTHLY EXPENSE
 def monthly_expense(request):
     monthly_data = (
         Expense.objects
