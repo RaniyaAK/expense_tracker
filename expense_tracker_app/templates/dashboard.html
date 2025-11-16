@@ -7,14 +7,10 @@
 
 <div class="expense-dashboard">
 
-    <!-- 🔹 Header -->
-    <div class="top-bar">
-        <div class="left-section">
+    <!-- 🔹 TOP BAR WRAPPER (FULL WIDTH BORDER) -->
+    <div class="top-bar-wrapper">
+        <div class="top-bar">
             <i id="profileBtn" class="fa-solid fa-user profile-icon"></i>
-        </div>
-
-        <div class="icon-container">
-            <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
         </div>
     </div>
 
@@ -54,75 +50,68 @@
 <!-- OVERLAY -->
 <div id="overlay" class="overlay"></div>
 
-<!-- SIDE PANEL -->
+<!-- LEFT SIDE PANEL -->
 <div id="profilePanel" class="side-panel hidden">
-    <div class="panel-header">
-        <span>Edit Profile</span>
-        <span id="closePanel" class="close-btn">&times;</span>
+
+    <!-- Centered Profile Icon -->
+    <div class="profile-center">
+        <i class="fa-solid fa-user large-profile"></i>
     </div>
 
-    <!-- Profile Form -->
-    <form id="editForm" method="POST" class="edit-form">
-        {% csrf_token %}
-        {% for field in form %}
-            <div class="form-group">
-                {{ field.label_tag }}
-                {{ field }}
-                {% for error in field.errors %}
-                    <div class="field-error">{{ error }}</div>
-                {% endfor %}
-            </div>
-        {% endfor %}
-        <button type="submit" class="save-btn">Save Changes</button>
-    </form>
+    <!-- USER INFO -->
+    <div class="user-info">
+        <h3 class="username">{{ request.user.username }}</h3>
+        <p class="email">{{ request.user.email }}</p>
+    </div>
+
+    <!-- Logout -->
+    <a href="{% url 'logout' %}" class="logout-btn-side">Logout</a>
+
 </div>
 
-<!-- 🔹 BROWN THEME + UPDATED STYLES -->
 <style>
+/* ❗ FIXED SMOOTH BACKGROUND */
 body {
     margin: 0;
+    padding: 0;
     font-family: "Poppins", sans-serif;
-    background: linear-gradient(180deg, #4e342e 0%, #3e2723 100%);
+
+    background: linear-gradient(180deg, #4e342e 0%, #3e2723 100%) fixed;
+    background-size: cover;
+    background-repeat: no-repeat;
     overflow-x: hidden;
 }
 
-/* Layout */
+/* Ensures gradient doesn't break */
 .expense-dashboard {
     min-height: 100vh;
     width: 100%;
-    padding: 40px 60px;
+    padding: 0;
 }
 
-/* Header */
+/* FULL WIDTH TOP BORDER */
+.top-bar-wrapper {
+    width: 100%;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.25);
+}
+
 .top-bar {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     padding: 15px 40px;
-    border-bottom: 2px solid #6d4c41;
-    width: 100%;
-    box-sizing: border-box; /* FIX underline full width */
 }
 
-/* PROFILE ICON */
+/* PROFILE ICON (TOP BAR) */
 .profile-icon {
     font-size: 52px;
     color: #ffe0b2;
     cursor: pointer;
 }
 
-/* Logout Button */
-.logout-btn {
-    padding: 8px 20px;
-    border-radius: 8px;
-    border: 2px solid #fff3e0;
-    color: #fff3e0;
-    text-decoration: none;
-    font-weight: 500;
-}
-.logout-btn:hover {
-    background: #fff3e0;
-    color: #4e342e;
+/* Content Area */
+.content-area {
+    padding: 40px;
 }
 
 /* Cards Section */
@@ -145,8 +134,6 @@ body {
 .action-card:hover {
     transform: translateY(-8px);
 }
-
-/* Icons */
 .card-icon {
     font-size: 40px;
     color: #6d4c41;
@@ -164,7 +151,7 @@ body {
 }
 .overlay.active { opacity:1; pointer-events:all; }
 
-/* Side Panel */
+/* Side Panel – LEFT SIDE */
 .side-panel {
     position: fixed;
     top: 0;
@@ -184,41 +171,60 @@ body {
     opacity: 1;
 }
 
-/* Form */
-.form-group {
-    margin-bottom: 15px;
+.profile-center {
+    width: 100%;
+    text-align: center;
+    margin-top: 20px;
 }
-.form-group label {
-    font-weight: 600;
-}
-.save-btn {
-    background: #6d4c41;
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-}
-.save-btn:hover {
-    background: #4e342e;
+.large-profile {
+    font-size: 80px;
+    color: #4e342e;
 }
 
+/* User Info Section */
+.user-info {
+    margin-top: 20px;
+}
+.username {
+    text-align: center;
+    font-weight: 700;
+    color: #4e342e;
+}
+.email {
+    text-align: left;
+    color: #6d4c41;
+    margin-top: 5px;
+}
+
+/* Logout Button */
+.logout-btn-side {
+    display: block;
+    margin-top: 30px;
+    padding: 10px 20px;
+    background: #6d4c41;
+    color: #fff !important;
+    text-decoration: none;
+    text-align: center;
+    border-radius: 8px;
+}
+.logout-btn-side:hover {
+    background: #4e342e;
+}
 </style>
 
 <script>
 const profileBtn = document.getElementById("profileBtn");
 const overlay = document.getElementById("overlay");
 const panel = document.getElementById("profilePanel");
-const closePanel = document.getElementById("closePanel");
 
 profileBtn.onclick = () => {
     overlay.classList.add("active");
     panel.classList.add("active");
 };
 
-overlay.onclick = close;
-closePanel.onclick = close;
+overlay.onclick = closePanel;
 
-function close() {
+function closePanel() {
     overlay.classList.remove("active");
     panel.classList.remove("active");
 }
